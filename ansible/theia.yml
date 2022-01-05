@@ -1,0 +1,25 @@
+---
+- name: Theia Install
+  hosts: '{{ lookup("env", "TARGET_HOSTS") }}'
+  ignore_unreachable: true
+  serial: 1
+  tasks:
+   - name: Install setuptools_scm
+     win_command: "{{python_path}} -m pip install setuptools_scm"
+   - name: Install Theia
+     win_command: "{{python_path}} -m pip install --index-url {{janus_registry}} Theia --upgrade --force-reinstall"
+   - name: Create Directory
+     win_file:
+       path: C:\ci\theia_venv
+       state: directory
+   - name: Copy requirements
+     win_copy:
+       src: requirements.txt
+       dest: "C:\\ci\\requirements.txt"
+   - name: Delete previous VENV
+     when: clean_previous_venv | lower == "true"
+     win_file:
+       path: C:\ci\theia_venv
+       state: absent
+   - name: Manage Theia
+     win_command: "{{python_path}} -m Theia --interpreters {{python_path}} --requirements C:\\ci\\requirements.txt --pause-runner --ip {{ runner_ip }} --token {{ lookup('env','GIT_ADMIN_ACCESS_TOKEN') }} {{ lookup('env','DEPLOY_EXTRA_ARGS') }}"
