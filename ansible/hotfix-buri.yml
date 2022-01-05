@@ -1,0 +1,12 @@
+---
+- name: Buri Install
+  hosts: '{{ lookup("env", "TARGET_HOSTS") }}'
+  ignore_unreachable: true
+  serial: 5
+  tasks:
+   - name: Copy requirements
+     win_copy:
+       src: requirements.txt
+       dest: "C:\\ci\\requirements.txt"
+   - name: Manage Buri
+     win_command: C:\ci\buri_venv\Scripts\python.exe -m pip install -r C:\ci\requirements.txt --upgrade

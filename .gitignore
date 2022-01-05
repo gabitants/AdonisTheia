@@ -1,0 +1,13 @@
+.idea
+__pycache__
+public/*
+public_tmp/*
+_templates/*
+qa/logs/*
+testExecution.log
+*.exe
+venv
+*.log
+.coverage
+.ssh/*
+output/*
